@@ -1,8 +1,3 @@
-/*
-daytime 클라이언트 프로그램이 실행되기 위해서는
-서버쪽에서 xinetd의 daytime이 구동하고 있어야한다.
-coder YoWu
-*/
  
 #include "stdio.h"
 #include "sys/types.h"
@@ -18,7 +13,7 @@ void main(int argc, char *argv[])
         struct sockaddr_in server_addr;
         //struct sockaddr_in server_addr : 서버의 소켓주소 구조체
         char buf[BUF_LEN+1];
- 
+
         if(argc != 2)
         {
                 printf("usage : %s ip_Address\n", argv[0]);
@@ -49,11 +44,15 @@ void main(int argc, char *argv[])
                 exit(0);
         }
         printf("[C10K][DWK] trying connect!\n");
-        const char* buffer = "abc";
-        for(int i = 0; i<1024; i++){
-            printf("[C10K][DWK] writing %s\n", buffer);
-            send(s, buffer, 4, 0);
+        const char* buffer = "abcdefghijklmnopqrstuv";
+        unsigned int cnt = 0;
+        while(1){
+                if(cnt % 1000000 == 0)
+                        printf("sending %s\n", buffer);
+                cnt++;
+                send(s, buffer, strlen(buffer), 0);
         }
+        send(s, buffer, 0, 0);
         close(s);
         printf("[C10K][SERV] closing client\n");
         //사용이 완료된 소켓을 닫기

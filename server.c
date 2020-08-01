@@ -5,6 +5,7 @@
 #include "sys/types.h"
 #include "sys/socket.h"
 #include "netinet/in.h"
+#include <sys/select.h>
 //소켓 프로그래밍에 사용될 헤더파일 선언
  
 #define BUF_LEN 128
@@ -44,34 +45,66 @@ int main(int argc, char *argv[])
         printf("Server : Can't bind local address.\n");
         exit(0);
     }
-    printf("[C10K][SERV] bind finished!\n");
+    
+
+	printf("[C10K][SERV] bind finished!\n");
     if(listen(server_fd, 5) < 0)
     {//소켓을 수동 대기모드로 설정
         printf("Server : Can't listening connect.\n");
         exit(0);
     }
- 
+	
+	fd_set reads, cpy_reads;
+	FD_ZERO(&reads);
+	FD_SET(server_fd, &reads);
+	int fd_max = server_fd; //for each connected clients, assign socket file descriptor
+	int fd_num = 0;
     memset(buffer, 0x00, sizeof(buffer));
     printf("Server : wating connection request.\n");
     len = sizeof(client_addr);
+	struct timeval timeout;
+	unsigned int cnt = 0;
     while(1)
     {
-        client_fd = accept(server_fd, (struct sockaddr *)&client_addr, &len);
-        printf("[C10K][SERV] accept!\n");
-        if(client_fd < 0)
-        {
-            printf("Server: accept failed.\n");
-            exit(0);
-        }
-        inet_ntop(AF_INET, &client_addr.sin_addr.s_addr, temp, sizeof(temp));
-        printf("Server : %s client connected.\n", temp);
-    
-        for(int i = 0; i<1024; i++){
-            msg_size = read(client_fd, buffer, 1024);
-            printf("[DWK][SERV] %s\n", buffer);
-        }
-        close(client_fd);
-        printf("Server : %s client closed.\n", temp);
+		cnt++;
+		cpy_reads = reads;
+		timeout.tv_sec = 5;
+		timeout.tv_usec = 50000;
+		if((fd_num = select(fd_max+1, &cpy_reads, 0, 0, &timeout)) == -1){
+			printf("fd_num : %d\n", fd_num);
+			perror("select() error");
+			break;
+		}
+		if(fd_num == 0)
+			continue;
+
+		for(int i = 0; i<=fd_max; i++){
+			if(FD_ISSET(i, &cpy_reads)){
+				if(i == server_fd){
+					client_fd = accept(server_fd, (struct sockaddr *)&client_addr, &len);
+					FD_SET(client_fd, &reads);
+					if(fd_max < client_fd){
+						fd_max = client_fd;
+					}
+					printf("[C10K][SERV] accept!\n");
+					if(client_fd < 0)
+					{
+						perror("Server: accept failed.\n");
+						exit(0);
+					}
+					printf("connected socket %d\n", client_fd);
+				}else{
+					if(cnt % 1000 == 0)
+						printf("processed socket %d\n", i);
+					msg_size = read(i, buffer, 1024);
+					if(msg_size == 0){
+						FD_CLR(i, &reads);
+				        close(i);
+						printf("Server : %d client closed.\n", i);
+					}
+				}
+			}
+		}
     }
     close(server_fd);
     return 0;
