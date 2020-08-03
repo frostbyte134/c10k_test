@@ -1,32 +1,25 @@
  
-#include "stdio.h"
-#include "sys/types.h"
-#include "sys/socket.h"
-#include "netinet/in.h"
- 
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <stdlib.h> 
+#include <arpa/inet.h>
+#include <string.h>
 #define BUF_LEN 128
 char buf[BUF_LEN+1];
 
 void main(int argc, char *argv[])
 {
 	int s, n;
-	char *haddr;
 	struct sockaddr_in server_addr;
 	
-	if(argc != 2)
-	{
-		printf("usage : %s ip_Address\n", argv[0]);
-		exit(0);
-	}
-	haddr = argv[1];
-
 	if((s = socket(PF_INET, SOCK_STREAM, 0)) < 0)
 	{//소켓 생성과 동시에 소켓 생성 유효검사
 		printf("can't create socket\n");
 		exit(0);
 	}
 
-	bzero((char *)&server_addr, sizeof(server_addr));
 	//서버의 소켓주소 구조체 server_addr을 NULL로 초기화
 
 	server_addr.sin_family = AF_INET;
