@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "in.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "c10k_common.h": "c"
     }
 }

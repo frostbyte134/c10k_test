@@ -4,5 +4,6 @@
 
 
 #define BUF_SIZE (1024u)
+#define SERV_PORT (24424u)
 
 #endif

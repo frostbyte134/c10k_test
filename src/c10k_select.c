@@ -9,30 +9,9 @@
 #include "c10k_select.h"
 
 
-void select_work_forever(struct sockaddr_in* p_serv_addr, uint8_t buffer[BUF_SIZE]){
+void select_work_forever(int serv_fd, uint8_t buffer[BUF_SIZE]){
     struct sockaddr_in client_addr;
-    int serv_fd;
-    if( (serv_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1 ){
-        fprintf(stderr, "Server : Can't open stream socket\n");
-        exit(-1);
-    }
     
-    printf("[C10K][SELECT][SERV] trying bind!\n");
-	//binds the port and serv_fd
-    if(bind(serv_fd, (struct sockaddr *)p_serv_addr, sizeof(struct sockaddr_in)) <0)
-    {
-        fprintf(stderr, "[C10K][SELECT][SERV] : Can't bind local address.\n");
-        exit(-1);
-    }
-    
-
-	printf("[C10K][SELECT][SERV] bind finished. Beginning to listen...\n");
-    if(listen(serv_fd, 5) < 0)
-    {
-        fprintf(stderr, "[C10K][SELECT][SERV]: Can't listening connect.\n");
-        exit(-1);
-    }
-	
 	fd_set reads, cpy_reads;
 	FD_ZERO(&reads);
 	FD_SET(serv_fd, &reads);

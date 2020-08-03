@@ -6,6 +6,7 @@
 #include <stdlib.h> 
 #include <arpa/inet.h>
 #include <string.h>
+#include "include/c10k_common.h"
 
 void main(int argc, char *argv[])
 {
@@ -24,10 +25,10 @@ void main(int argc, char *argv[])
 	//주소 체계를 AF_INET 로 선택
 	server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	//32비트의 IP주소로 변환
-	server_addr.sin_port = htons(10102);
+	server_addr.sin_port = htons(SERV_PORT);
 	
 	//daytime 서비스 포트 번호
-	printf("[C10K][DWK] trying connect!\n");
+	printf("[C10K][DWK] trying connect to port %u!\n", SERV_PORT);
 	if(connect(s, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
 	{//서버로 연결요청
 		printf("can't connect.\n");
