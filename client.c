@@ -28,13 +28,13 @@ void main(int argc, char *argv[])
 	server_addr.sin_port = htons(SERV_PORT);
 	
 	//daytime 서비스 포트 번호
-	printf("[C10K][DWK] trying connect to port %u!\n", SERV_PORT);
+	printf("[CLI] trying connect to port %u!\n", SERV_PORT);
 	if(connect(s, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
 	{//서버로 연결요청
 		printf("can't connect.\n");
 		exit(0);
 	}
-	printf("[C10K][DWK] trying connect!\n");
+	printf("[CLI] trying connect!\n");
 	const char* buffer = "abcdefghijklmnopqrstuv";
 	unsigned int cnt = 0;
 	while(1){
@@ -45,6 +45,6 @@ void main(int argc, char *argv[])
 	}
 	send(s, buffer, 0, 0);
 	close(s);
-	printf("[C10K][SERV] closing client\n");
+	printf("[CLI] closing client\n");
 	//사용이 완료된 소켓을 닫기
 }

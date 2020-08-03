@@ -17,7 +17,7 @@ void select_work_forever(int serv_fd, uint8_t buffer[BUF_SIZE]){
 	FD_SET(serv_fd, &reads);
 	int fd_max = serv_fd; //for each connected clients, assign socket file descriptor
 	int fd_num = 0;
-    printf("[C10K][SELECT][SERV]: wating connection request.\n");
+    printf("[SERV][SELECT]: wating connection request.\n");
 	struct timeval timeout;
 	unsigned int cnt = 0;
     while(1)
@@ -27,7 +27,7 @@ void select_work_forever(int serv_fd, uint8_t buffer[BUF_SIZE]){
 		timeout.tv_sec = 5;
 		timeout.tv_usec = 50000;
 		if((fd_num = select(fd_max+1, &cpy_reads, 0, 0, &timeout)) == -1){
-			fprintf(stderr, "[C10K][SELECT][SERV] fd_num : %d select() error", fd_num);
+			fprintf(stderr, "[SERV][SELECT] fd_num : %d select() error", fd_num);
 			break;
 		}
 		if(fd_num == 0)
@@ -42,25 +42,25 @@ void select_work_forever(int serv_fd, uint8_t buffer[BUF_SIZE]){
 					if(fd_max < sock_fd){
 						fd_max = sock_fd;
 					}
-					printf("[C10K][SELECT][SERV] accept!\n");
+					printf("[SERV][SELECT] accept!\n");
 					if(sock_fd < 0)
 					{
-						fprintf(stderr, "[C10K][SELECT][SERV]: accept failed.\n");
+						fprintf(stderr, "[SERV][SELECT]: accept failed.\n");
 						exit(-1);
 					}
 				}else{
 					if(cnt % 1000 == 0)
-						printf("[C10K][SELECT][SERV] processed socket %d\n", i);
+						printf("[SERV][SELECT] processed socket %d\n", i);
 					int msg_size = read(i, buffer, BUF_SIZE);
 					if(msg_size == 0){
 						FD_CLR(i, &reads);
 				        close(i);
-						printf("[C10K][SELECT][SERV] Server : %d client closed.\n", i);
+						printf("[SERV][SELECT] Server : %d client closed.\n", i);
 					}
 				}
 			}
 		}
     }
     close(serv_fd);
-	printf("[C10K][SELECT][SERV], closed socket successfully (unreachable, perahps)\n");
+	printf("[SERV][SELECT], closed socket successfully (unreachable, perahps)\n");
 }

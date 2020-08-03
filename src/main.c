@@ -16,26 +16,26 @@ int main(int argc, char *argv[])
     int serv_fd;
 
     if( (serv_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1 ){
-        fprintf(stderr, "Server : Can't open stream socket\n");
+        fprintf(stderr, "[SERV] : Can't open stream socket\n");
         exit(-1);
     }
 	
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     server_addr.sin_port = htons(SERV_PORT);
-    printf("[C10K][SELECT][SERV] port = %u, trying bind!\n", SERV_PORT);
+    printf("[SERV] port = %u, trying bind!\n", SERV_PORT);
 	//binds the port and serv_fd
     if(bind(serv_fd, (struct sockaddr *)&server_addr, sizeof(struct sockaddr_in)) <0)
     {
-        fprintf(stderr, "[C10K][SELECT][SERV] : Can't bind local address.\n");
+        fprintf(stderr, "[SERV] : Can't bind local address.\n");
         exit(-1);
     }
     
 
-	printf("[C10K][SELECT][SERV] bind finished. Beginning to listen...\n");
+	printf("[SERV] bind finished. Beginning to listen...\n");
     if(listen(serv_fd, 5) < 0)
     {
-        fprintf(stderr, "[C10K][SELECT][SERV]: Can't listening connect.\n");
+        fprintf(stderr, "[SERV]: Can't listening connect.\n");
         exit(-1);
     }
 	
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 	struct AppObj appObj = {
 	.server_engine = select_work_forever
 	};
-	
+	printf("[SERV] found server socket. Beginning to run the main c10k procedure...\n");
 	appObj.server_engine(serv_fd, buffer);
 
     return 0;
