@@ -16,7 +16,8 @@ server: $(SERVER)
 client: $(CLIENT)
 
 $(SERVER) :
-	$(CC) $(CFLAGS) -o $@ $^ -I $(IDIRS) $(SRCS) #acually we dont need $^ here since we dont have any dependencies
+	$(CC) $(CFLAGS) -o $@ $^ -I $(IDIRS) $(SRCS) 
+#acually we dont need $^ here since we dont have any dependencies
 
 $(CLIENT) :
 	$(CC) $(CFLAGS) -o $@ $^ client.c

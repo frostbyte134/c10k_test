@@ -6,6 +6,7 @@
 #include <stdlib.h> 
 #include <arpa/inet.h>
 #include <string.h>
+#include <unistd.h>
 #include "include/c10k_common.h"
 
 void main(int argc, char *argv[])
@@ -28,23 +29,24 @@ void main(int argc, char *argv[])
 	server_addr.sin_port = htons(SERV_PORT);
 	
 	//daytime 서비스 포트 번호
-	printf("[CLI] trying connect to port %u!\n", SERV_PORT);
+	//printf("[CLI] trying connect to port %u!\n", SERV_PORT);
 	if(connect(s, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
 	{//서버로 연결요청
-		printf("can't connect.\n");
+		fprintf(stderr, "connect() < 0. terminating client\n");
 		exit(0);
 	}
-	printf("[CLI] trying connect!\n");
+	//printf("[CLI] connect finished!\n");
 	const char* buffer = "abcdefghijklmnopqrstuv";
 	unsigned int cnt = 0;
 	while(1){
-		if(cnt % 1000000 == 0)
-				printf("sending %s\n", buffer);
+		//usleep(500);
+		//for(int i = 0; i<5; i++)
+		//	printf("sending %s\n", buffer);	
 		cnt++;
 		send(s, buffer, strlen(buffer), 0);
 	}
 	send(s, buffer, 0, 0);
 	close(s);
-	printf("[CLI] closing client\n");
+	//printf("[CLI] closing client\n");
 	//사용이 완료된 소켓을 닫기
 }

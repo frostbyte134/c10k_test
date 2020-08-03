@@ -42,15 +42,15 @@ void select_work_forever(int serv_fd, uint8_t buffer[BUF_SIZE]){
                     if(fd_max < sock_fd){
                         fd_max = sock_fd;
                     }
-                    printf("[SERV][SELECT] accept!\n");
+                    printf("[SERV][SELECT] accept socket %d!\n", sock_fd);
                     if(sock_fd < 0)
                     {
                         fprintf(stderr, "[SERV][SELECT]: accept failed.\n");
                         exit(-1);
                     }
                 }else{
-                    if(cnt % 1000 == 0)
-                        printf("[SERV][SELECT] processed socket %d\n", i);
+                    //if(cnt % 1000 == 0)
+                    //    printf("[SERV][SELECT] processed socket %d\n", i);
                     int msg_size = read(i, buffer, BUF_SIZE);
                     if(msg_size == 0){
                         FD_CLR(i, &reads);

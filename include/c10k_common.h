@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 
-#define BUF_SIZE (1024u)
-#define SERV_PORT (24424u)
+#define BUF_SIZE (1024*1024*10u)
+#define SERV_PORT (34226u)
 
 #endif
