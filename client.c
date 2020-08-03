@@ -6,8 +6,6 @@
 #include <stdlib.h> 
 #include <arpa/inet.h>
 #include <string.h>
-#define BUF_LEN 128
-char buf[BUF_LEN+1];
 
 void main(int argc, char *argv[])
 {
