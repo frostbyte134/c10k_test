@@ -1,7 +1,4 @@
 
-./c10k_serv.out &
-sleep 1
-
 
 for ((i=0;i<850;i++))
 do
