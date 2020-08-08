@@ -3,6 +3,8 @@
         "in.h": "c",
         "string.h": "c",
         "c10k_common.h": "c",
-        "unistd.h": "c"
+        "unistd.h": "c",
+        "c10k_msg_proc.h": "c",
+        "c10k_epoll.h": "c"
     }
 }

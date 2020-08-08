@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <netinet/in.h>
-#include <c10k_epoll.h>
-#include <c10k_select.h>
+#include "c10k_epoll.h"
+#include "c10k_select.h"
+#include "c10k_pthread.h"
 
 struct AppObj{
-    void (*server_engine)(int serv_fd, uint8_t buffer[BUF_SIZE]);
+    void (*server_engine)(int serv_fd, uint8_t buffer[BUF_SIZE], uint32_t buf_size);
 };
 
 uint8_t buffer[BUF_SIZE];
@@ -43,11 +44,12 @@ int main(int argc, char *argv[])
 
 
     struct AppObj appObj = {
-        .server_engine = select_work_forever
+        //.server_engine = select_work_forever
         //.server_engine = epoll_work_forever
+        .server_engine = pthread_work_forever
     };
     printf("[SERV] listen done. Beginning to run the main c10k procedure...\n");
-    appObj.server_engine(serv_fd, buffer);
+    appObj.server_engine(serv_fd, buffer, BUF_SIZE);
 
     return 0;
 }

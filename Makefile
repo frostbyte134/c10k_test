@@ -16,7 +16,7 @@ server: $(SERVER)
 client: $(CLIENT)
 
 $(SERVER) :
-	$(CC) $(CFLAGS) -o $@ $^ -I $(IDIRS) $(SRCS) 
+	$(CC) $(CFLAGS) -o $@ $^ -I $(IDIRS) $(SRCS) -lpthread
 #acually we dont need $^ here since we dont have any dependencies
 
 $(CLIENT) :

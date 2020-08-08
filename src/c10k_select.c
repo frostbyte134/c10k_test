@@ -1,16 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <sys/select.h>
+
 #include "c10k_select.h"
+#include "c10k_msg_proc.h"
+struct sockaddr_in client_addrs[NUM_MAX_CLIENTS]; //global var - assuming single server on sincle app
 
-
-void select_work_forever(int serv_fd, uint8_t buffer[BUF_SIZE]){
-    struct sockaddr_in client_addr;
+void select_work_forever(int serv_fd, uint8_t buffer[BUF_SIZE], uint32_t buffer_size){
     
     fd_set reads, cpy_reads;
     FD_ZERO(&reads);
@@ -19,7 +12,8 @@ void select_work_forever(int serv_fd, uint8_t buffer[BUF_SIZE]){
     int fd_num = 0;
     printf("[SERV][SELECT]: wating connection request.\n");
     struct timeval timeout;
-    unsigned int cnt = 0;
+    uint32_t cnt = 0, socket_cnt = 0;
+
     while(1)
     {
         cnt++;
@@ -37,7 +31,7 @@ void select_work_forever(int serv_fd, uint8_t buffer[BUF_SIZE]){
             if(FD_ISSET(i, &cpy_reads)){
                 if(i == serv_fd){
                     int sock_fd = 0, add_struct_size = 0;
-                    sock_fd = accept(serv_fd, (struct sockaddr *)&client_addr, &add_struct_size);
+                    sock_fd = accept(serv_fd, (struct sockaddr *)&client_addrs[socket_cnt++], &add_struct_size);
                     FD_SET(sock_fd, &reads);
                     if(fd_max < sock_fd){
                         fd_max = sock_fd;
@@ -51,7 +45,7 @@ void select_work_forever(int serv_fd, uint8_t buffer[BUF_SIZE]){
                 }else{
                     //if(cnt % 1000 == 0)
                     //    printf("[SERV][SELECT] processed socket %d\n", i);
-                    int msg_size = read(i, buffer, BUF_SIZE);
+                    int msg_size = recv_message(i, buffer, BUF_SIZE);
                     if(msg_size == 0){
                         FD_CLR(i, &reads);
                         close(i);
