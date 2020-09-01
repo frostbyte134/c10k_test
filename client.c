@@ -51,7 +51,7 @@ int setup_signals()
   return 0;
 }
 
-void main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	
 	if (setup_signals() != 0){
@@ -71,7 +71,7 @@ void main(int argc, char *argv[])
 	srand( time(NULL) );
 	server_addr.sin_family = AF_INET;
 	//주소 체계를 AF_INET 로 선택
-	server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	server_addr.sin_addr.s_addr = inet_addr("192.168.0.6");
 	//32비트의 IP주소로 변환
 	server_addr.sin_port = htons(SERV_PORT);
 	
@@ -86,11 +86,11 @@ void main(int argc, char *argv[])
 	const char* buffer = "abcdefghijklmnopqrstuv";
 	unsigned int cnt = 0;
 	while(cont){
-		usleep(10000);
+		usleep(100000);
 		//for(int i = 0; i<5; i++)
 		//	printf("sending %s\n", buffer);	
 		cnt++;
-		if (rand() % 10000 == 0)
+		if (rand() % 100000 == 0)
 			printf("cli %s : sending %s\n", argv[2], buffer);		
 		send(sock_desc, buffer, strlen(buffer), 0);
 	}
