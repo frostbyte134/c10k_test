@@ -17,7 +17,7 @@ struct thread_args{
 struct sockaddr_in client_addrs[NUM_MAX_CLIENTS]; //global var - assuming single server on sincle app
 pthread_t threads[NUM_MAX_CLIENTS];
 struct thread_args targs[NUM_MAX_CLIENTS];
-
+uint32_t socket_cnt = 0;
 
 void socket_process(void* arg_p){
     printf("starting %u th thread!\n", ((struct thread_args*)arg_p)->thread_count);
@@ -32,16 +32,18 @@ void socket_process(void* arg_p){
             break;
         }else{
             if(cnt % 1000000 == 0)
-                printf("rcvd %s from thread %u\n", local_buffer, ((struct thread_args*)arg_p)->thread_count);
+                printf("total threads = %u, rcvd %s from thread %u\n", socket_cnt, local_buffer, ((struct thread_args*)arg_p)->thread_count);
         }
         cnt++;
+        //if (((struct thread_args*)arg_p)->thread_count == 100)
+        //    printf("cnt = %d, rcvd %s from thread %u\n", cnt, local_buffer, ((struct thread_args*)arg_p)->thread_count);
     }
     printf("terminating %u th thread!\n", ((struct thread_args*)arg_p)->thread_count);
 }
 
 void pthread_work_forever(int serv_fd, uint8_t buffer[BUF_SIZE], uint32_t buffer_size){
     
-    uint32_t socket_cnt = 0;
+    
     
     while(1)
     {

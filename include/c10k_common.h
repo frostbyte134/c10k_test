@@ -5,6 +5,6 @@
 
 #define BUF_SIZE (1024*1024*30u)
 #define SERV_PORT (34222u)
-#define NUM_MAX_CLIENTS (20000u)
+#define NUM_MAX_CLIENTS (50000u)
 
 #endif

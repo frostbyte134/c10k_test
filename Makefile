@@ -20,7 +20,7 @@ $(SERVER) :
 #acually we dont need $^ here since we dont have any dependencies
 
 $(CLIENT) :
-	$(CC) $(CFLAGS) -o $@ $^ client.c
+	$(CC) $(CFLAGS) -o $@ $^ client.c -lpthread
 
 clean:
 	rm -f *.out
