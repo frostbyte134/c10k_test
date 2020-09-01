@@ -1,3 +1,7 @@
 *.out
 log.ini
 *.ini
+.fuse*
+*.pcap
+*strace
+*ftrace
