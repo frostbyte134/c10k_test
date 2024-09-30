@@ -30,7 +30,7 @@ def send_gmail(title, body):
 while True:
     try:
 
-        data = requests.get("https://soui.kr/product/classic-shirt-over-dyed-check-sky-bluebrown/2648/category/112/display/1/#none",
+        data = requests.get("https://thekamia.cafe24.com/product/classic-check-poplin-shirt-gray/89/",
                             headers={"User-Agent": "Mozilla/5.0"})
         resp_str = data.content.decode('utf-8')
 
@@ -47,7 +47,7 @@ while True:
                 print(stock_data)
 
                 print()
-                if stock_data["P0000DXW000A"]["stock_number"] == 0:
+                if stock_data["P00000DL000A"]["stock_number"] == 0:
                     print('sending email!')
                     send_gmail("mailbag black chuistock on", "gogogo")
                     print(' email sent!')
